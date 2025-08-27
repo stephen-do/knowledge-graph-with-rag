@@ -28,13 +28,13 @@ def parse_args():
     parser.add_argument(
         "--graph-documents-pkl-path",
         type=str,
-        default="data/sec-10-q/graphs/graph_documents.pkl",
+        default="data/graphs/sec10q_entity_graph.pkl",
         help="Path to the graph documents pickle file",
     )
     parser.add_argument(
         "--documents-pkl-path",
         type=str,
-        default="data/sec-10-q/graphs/documents.pkl",
+        default="data/graphs/sec10q_entity_graph_documents.pkl",
         help="Path to the chunked documents pickle file",
     )
     parser.add_argument(

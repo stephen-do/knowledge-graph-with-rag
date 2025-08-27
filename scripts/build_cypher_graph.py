@@ -24,12 +24,12 @@ def parse_args():
         description="Build a Cypher-based knowledge graph from documents"
     )
     parser.add_argument(
-        "--docs-dir", type=str, required=True, help="Directory containing the documents"
+        "--docs-dir", type=str, default='data/sec-10-q/docs', help="Directory containing the documents"
     )
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="data",
+        default="data/neo4j",
         help="Directory to save graph documents",
     )
     parser.add_argument(
@@ -62,7 +62,7 @@ def parse_args():
     parser.add_argument(
         "--neo4j-password",
         type=str,
-        default=None,
+        default='adgjmptw1',
         help="Password for Neo4j connection (if not provided, uses environment variable)",
     )
     parser.add_argument(

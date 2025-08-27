@@ -33,7 +33,7 @@ def parse_args():
     parser.add_argument(
         "--neo4j-password",
         type=str,
-        default=None,
+        default='adgjmptw1',
         help="Password for Neo4j connection (if not provided, uses environment variable)",
     )
     parser.add_argument(

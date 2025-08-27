@@ -12,7 +12,6 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from langchain_openai import ChatOpenAI
-from langchain_cohere import ChatCohere
 
 from kg_rag.utils.document_loader import load_documents
 from kg_rag.utils.graph_utils import (
@@ -46,7 +45,7 @@ def main():
     print(f"Loaded {len(documents)} document chunks")
 
     # Initialize LLM
-    llm = ChatCohere(temperature=0, model="command-r")
+    llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
 
     # Create graph
     print("Creating graph from documents...")

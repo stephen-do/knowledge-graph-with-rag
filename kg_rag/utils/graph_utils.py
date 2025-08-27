@@ -8,7 +8,6 @@ import networkx as nx
 from langchain_community.graphs.networkx_graph import NetworkxEntityGraph
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
-from langchain_cohere import ChatCohere
 from tqdm.auto import tqdm
 
 # from langchain_experimental.graph_transformers import LLMGraphTransformer
@@ -77,7 +76,7 @@ def load_graph_documents(file_path: str) -> Any:
 
 def create_graph_from_documents(
     documents: list[Document],
-    llm: ChatCohere | None = None,
+    llm: ChatOpenAI | None = None,
     graph_documents_path: str | None = None,
     force_rebuild: bool = False,
 ) -> tuple[nx.DiGraph, list[Any]]:
@@ -96,7 +95,7 @@ def create_graph_from_documents(
     """
     # Setup LLM if not provided
     if llm is None:
-        llm = ChatCohere(temperature=0, model="command-r")
+        llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
 
     # Create LLM transformer
     llm_transformer = MetadataEnhancedLLMGraphTransformer(llm)
