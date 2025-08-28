@@ -81,7 +81,7 @@ def main():
     )
 
     # Initialize LLMs
-    llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
+    llm = ChatOpenAI(temperature=0, model="gpt-4o")
 
     # Create KG-RAG system
     print("Initializing KG-RAG system...")

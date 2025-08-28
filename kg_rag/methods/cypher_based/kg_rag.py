@@ -67,6 +67,7 @@ class CypherBasedKGRAG:
 
         # Get graph schema
         self.schema = self.cypher_generator.get_schema(graph)
+        print(self.schema)
 
         # Create GraphCypherQAChain
         self.chain = GraphCypherQAChain.from_llm(

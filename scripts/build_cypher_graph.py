@@ -1,158 +1,108 @@
-#!/usr/bin/env python
-"""Script to build a Cypher-based knowledge graph from documents."""
+import csv
+from neo4j import GraphDatabase
 
-import argparse
-import os
-import sys
-from pathlib import Path
-
-from dotenv import load_dotenv
-
-
-# Add the parent directory to the path so we can import the modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from langchain_openai import ChatOpenAI
-
-from kg_rag.methods.cypher_based.graph_constructor import CypherGraphConstructor
-from kg_rag.utils.document_loader import load_documents
+# --- CONFIG LOCAL NEO4J ---
+NEO4J_URI = "bolt://localhost:7687"   # local neo4j bolt URI
+NEO4J_USERNAME = "neo4j"              # mặc định user
+NEO4J_PASSWORD = "adgjmptw1"           # đổi theo password của bạn
+AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
 
 
-def parse_args():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Build a Cypher-based knowledge graph from documents"
-    )
-    parser.add_argument(
-        "--docs-dir", type=str, default='data/sec-10-q/docs', help="Directory containing the documents"
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="data/neo4j",
-        help="Directory to save graph documents",
-    )
-    parser.add_argument(
-        "--graph-docs-name",
-        type=str,
-        default="cypher_graph_documents",
-        help="Name of the graph documents file",
-    )
-    parser.add_argument(
-        "--file-filter",
-        type=str,
-        default=None,
-        help="Optional string to filter filenames",
-    )
-    parser.add_argument(
-        "--chunk-size", type=int, default=512, help="Size of document chunks"
-    )
-    parser.add_argument(
-        "--chunk-overlap", type=int, default=24, help="Overlap between document chunks"
-    )
-    parser.add_argument(
-        "--neo4j-uri",
-        type=str,
-        default="bolt://localhost:7687",
-        help="URI for Neo4j connection",
-    )
-    parser.add_argument(
-        "--neo4j-user", type=str, default="neo4j", help="Username for Neo4j connection"
-    )
-    parser.add_argument(
-        "--neo4j-password",
-        type=str,
-        default='adgjmptw1',
-        help="Password for Neo4j connection (if not provided, uses environment variable)",
-    )
-    parser.add_argument(
-        "--force-rebuild",
-        action="store_true",
-        help="Force rebuilding the graph documents",
-    )
-    parser.add_argument("--verbose", action="store_true", help="Print verbose output")
+# Function to connect and run a Cypher query
+def execute_query(driver, cypher_query, parameters=None):
+    try:
+        with driver.session() as session:
+            session.run(cypher_query, parameters)
+    except Exception as e:
+        print(f"Error: {e}")
 
-    return parser.parse_args()
+
+def create_healthcare_provider_node(driver, provider, bio):
+    create_provider_query = """
+    MERGE (hp:HealthcareProvider {name: $provider})
+    SET hp.bio = $bio
+    """
+    parameters = {"provider": provider, "bio": bio}
+    execute_query(driver, create_provider_query, parameters)
+
+
+def create_patient_node(driver, patient, patient_age, patient_gender, patient_condition):
+    create_patient_query = """
+    MERGE (p:Patient {name: $patient})
+    SET p.age = $patient_age,
+        p.gender = $patient_gender,
+        p.condition = $patient_condition
+    """
+    parameters = {
+        "patient": patient,
+        "patient_age": patient_age,
+        "patient_gender": patient_gender,
+        "patient_condition": patient_condition,
+    }
+    execute_query(driver, create_patient_query, parameters)
+
+
+def create_specialization_node(driver, specialization):
+    create_specialization_query = """
+    MERGE (s:Specialization {name: $specialization})
+    """
+    parameters = {"specialization": specialization}
+    execute_query(driver, create_specialization_query, parameters)
+
+
+def create_location_node(driver, location):
+    create_location_query = """
+    MERGE (l:Location {name: $location})
+    """
+    parameters = {"location": location}
+    execute_query(driver, create_location_query, parameters)
+
+
+def create_relationships(driver, provider, patient, specialization, location):
+    create_relationships_query = """
+    MATCH (hp:HealthcareProvider {name: $provider}), (p:Patient {name: $patient})
+    MERGE (hp)-[:TREATS]->(p)
+    WITH hp
+    MATCH (hp), (s:Specialization {name: $specialization})
+    MERGE (hp)-[:SPECIALIZES_IN]->(s)
+    WITH hp
+    MATCH (hp), (l:Location {name: $location})
+    MERGE (hp)-[:LOCATED_AT]->(l)
+    """
+    parameters = {
+        "provider": provider,
+        "patient": patient,
+        "specialization": specialization,
+        "location": location,
+    }
+    execute_query(driver, create_relationships_query, parameters)
 
 
 def main():
-    """Build a Cypher-based knowledge graph from documents."""
-    # Load environment variables
-    load_dotenv()
+    driver = GraphDatabase.driver(NEO4J_URI, auth=AUTH)
 
-    args = parse_args()
+    with open("healthcare.csv", mode="r") as file:  # chỉnh lại path file csv của bạn
+        reader = csv.DictReader(file)
+        print("Reading CSV file...")
 
-    # Create output directory if it doesn't exist
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+        for row in reader:
+            provider = row["Provider"]
+            patient = row["Patient"]
+            specialization = row["Specialization"]
+            location = row["Location"]
+            bio = row["Bio"]
+            patient_age = row["Patient_Age"]
+            patient_gender = row["Patient_Gender"]
+            patient_condition = row["Patient_Condition"]
 
-    # Path for saving graph documents
-    graph_docs_path = output_dir / f"{args.graph_docs_name}.pkl"
+            create_healthcare_provider_node(driver, provider, bio)
+            create_patient_node(driver, patient, patient_age, patient_gender, patient_condition)
+            create_specialization_node(driver, specialization)
+            create_location_node(driver, location)
+            create_relationships(driver, provider, patient, specialization, location)
 
-    # Set Neo4j password from environment variable if not provided
-    neo4j_password = args.neo4j_password or os.getenv("NEO4J_PASSWORD", "password")
-
-    # Load documents
-    print(f"Loading documents from {args.docs_dir}...")
-    documents = load_documents(
-        directory_path=args.docs_dir,
-        file_filter=args.file_filter,
-        chunk_size=args.chunk_size,
-        chunk_overlap=args.chunk_overlap,
-    )
-    print(f"Loaded {len(documents)} document chunks")
-
-    # Initialize LLM
-    llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
-
-    # Create graph constructor
-    graph_constructor = CypherGraphConstructor(
-        llm=llm,
-        neo4j_uri=args.neo4j_uri,
-        neo4j_user=args.neo4j_user,
-        neo4j_password=neo4j_password,
-        verbose=args.verbose,
-    )
-
-    # Process documents and build graph
-    print("Processing documents and building Neo4j graph...")
-    neo4j_graph = graph_constructor.process_documents(
-        documents=documents,
-        graph_documents_path=str(graph_docs_path),
-        force_rebuild=args.force_rebuild,
-        clear_existing=True,
-    )
-
-    # Print graph information
-    result = neo4j_graph.query("MATCH (n) RETURN count(n) as nodeCount")
-    node_count = result[0]["nodeCount"] if result else 0
-
-    result = neo4j_graph.query("MATCH ()-[r]->() RETURN count(r) as relCount")
-    rel_count = result[0]["relCount"] if result else 0
-
-    result = neo4j_graph.query("MATCH (n) RETURN DISTINCT labels(n) as labels")
-    label_count = len(result) if result else 0
-
-    result = neo4j_graph.query("MATCH ()-[r]->() RETURN DISTINCT type(r) as types")
-    rel_type_count = len(result) if result else 0
-
-    print("\nNeo4j Graph Information:")
-    print(f"  Nodes: {node_count}")
-    print(f"  Relationships: {rel_count}")
-    print(f"  Node labels: {label_count}")
-    print(f"  Relationship types: {rel_type_count}")
-
-    # Print some example relationship types
-    if rel_type_count > 0:
-        result = neo4j_graph.query(
-            "MATCH ()-[r]->() RETURN DISTINCT type(r) as type LIMIT 10"
-        )
-        print("\nExample relationship types:")
-        for row in result:
-            print(f"  {row['type']}")
-
-    print("\nGraph built successfully")
-    print(f"Graph documents saved to {graph_docs_path}")
+    driver.close()
+    print("Graph populated successfully!")
 
 
 if __name__ == "__main__":
