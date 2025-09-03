@@ -13,9 +13,26 @@ ENTITY_SYSTEM_PROMPT = """You are a helpful assistant that answers queries about
 Base your answer ONLY on the provided context and the mapped entities and relationships.
 The current date is {date}."""
 
-CYPHER_SYSTEM_PROMPT = """You are a helpful assistant that answers queries about SEC 10-Q filings using graph database information.
-Use the information retrieved from the database to provide accurate answers.
-The current date is {date}."""
+CYHER_RESULT_INTERPRETATION = """\
+Result semantics:
+- The provided context is the POST-QUERY result for the user's question (already filtered by the appropriate Cypher).
+- Treat every row as ALREADY linked to the target entities/relationships in the question unless a field explicitly contradicts it.
+- Do NOT claim that linkage is missing just because the row does not redundantly repeat the relationship; the filtering has been applied upstream.
+- All results are linked with the object inputs.
+
+Aliases:
+- p:Patient ; s:Specialization ; hp:HealthcareProvider ; l:Location
+
+Large results policy:
+- First return the total count of unique matches (deduplicate by stable id like `uri`).
+- Then return a sample subset (e.g., 5 records).
+
+Answering policy:
+- If `p` objects are present, answer with those patients (e.g., list names and optional fields such as age, gender, condition).
+- Only say “no results” when the context array is truly empty after deduplication.
+- Do not ask for more information; base the answer solely on the provided context.
+"""
+
 
 GRAPHRAG_SYSTEM_PROMPT = """You are a helpful assistant that answers queries about SEC 10-Q filings using community-aware graph information.
 Provide your answers based solely on the information in the provided graph communities.
@@ -75,7 +92,7 @@ def get_prompt(
     base_prompt_map = {
         "baseline": BASELINE_SYSTEM_PROMPT,
         "entity": ENTITY_SYSTEM_PROMPT,
-        "cypher": CYPHER_SYSTEM_PROMPT,
+        "cypher": CYHER_RESULT_INTERPRETATION,
         "graphrag": GRAPHRAG_SYSTEM_PROMPT,
     }
 

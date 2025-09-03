@@ -1,0 +1,237 @@
+@prefix hc: <http://example.org/healthcare#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+hc:Dr_Emily_Davis a hc:HealthcareProvider ;
+    hc:LOCATED_AT hc:Chicago,
+        hc:Houston,
+        hc:Los_Angeles,
+        hc:New_York,
+        hc:Phoenix ;
+    hc:SPECIALIZES_IN hc:Cardiology,
+        hc:Dermatology,
+        hc:Neurology,
+        hc:Orthopedics,
+        hc:Pediatrics ;
+    hc:TREATS hc:Bob_White,
+        hc:Charlie_Green,
+        hc:David_Black,
+        hc:Eva_Blue,
+        hc:Frank_Yellow,
+        hc:Grace_Red ;
+    hc:bio "Dr. Emily Davis specializes in neurology and has published numerous research papers." ;
+    hc:name "Dr. Emily Davis" .
+
+hc:Dr_Jessica_Lee a hc:HealthcareProvider ;
+    hc:LOCATED_AT hc:Chicago,
+        hc:Houston,
+        hc:Los_Angeles,
+        hc:New_York,
+        hc:Phoenix ;
+    hc:SPECIALIZES_IN hc:Cardiology,
+        hc:Dermatology,
+        hc:Neurology,
+        hc:Orthopedics,
+        hc:Pediatrics ;
+    hc:TREATS hc:Alice_Brown,
+        hc:Bob_White,
+        hc:Charlie_Green,
+        hc:David_Black,
+        hc:Eva_Blue,
+        hc:Frank_Yellow,
+        hc:Grace_Red ;
+    hc:bio "Dr. Jessica Lee is a dermatologist focused on skin cancer treatment and prevention." ;
+    hc:name "Dr. Jessica Lee" .
+
+hc:Dr_John_Smith a hc:HealthcareProvider ;
+    hc:LOCATED_AT hc:Chicago,
+        hc:Houston,
+        hc:Los_Angeles,
+        hc:New_York,
+        hc:Phoenix ;
+    hc:SPECIALIZES_IN hc:Cardiology,
+        hc:Dermatology,
+        hc:Neurology,
+        hc:Orthopedics,
+        hc:Pediatrics ;
+    hc:TREATS hc:Alice_Brown,
+        hc:Bob_White,
+        hc:Charlie_Green,
+        hc:David_Black,
+        hc:Eva_Blue,
+        hc:Frank_Yellow,
+        hc:Grace_Red ;
+    hc:bio "Dr. John Smith is a renowned cardiologist with over 20 years of experience." ;
+    hc:name "Dr. John Smith" .
+
+hc:Dr_Michael_Brown a hc:HealthcareProvider ;
+    hc:LOCATED_AT hc:Chicago,
+        hc:Houston,
+        hc:Los_Angeles,
+        hc:New_York ;
+    hc:SPECIALIZES_IN hc:Cardiology,
+        hc:Neurology,
+        hc:Orthopedics,
+        hc:Pediatrics ;
+    hc:TREATS hc:Alice_Brown,
+        hc:Bob_White,
+        hc:Charlie_Green,
+        hc:David_Black,
+        hc:Frank_Yellow ;
+    hc:bio "Dr. Michael Brown is an orthopedic surgeon with expertise in joint replacement." ;
+    hc:name "Dr. Michael Brown" .
+
+hc:Dr_Sarah_Johnson a hc:HealthcareProvider ;
+    hc:LOCATED_AT hc:Chicago,
+        hc:Houston,
+        hc:Los_Angeles,
+        hc:New_York,
+        hc:Phoenix ;
+    hc:SPECIALIZES_IN hc:Cardiology,
+        hc:Dermatology,
+        hc:Neurology,
+        hc:Orthopedics,
+        hc:Pediatrics ;
+    hc:TREATS hc:Alice_Brown,
+        hc:Bob_White,
+        hc:Charlie_Green,
+        hc:David_Black,
+        hc:Eva_Blue,
+        hc:Frank_Yellow,
+        hc:Grace_Red ;
+    hc:bio "Dr. Sarah Johnson is a pediatrician known for her compassionate care." ;
+    hc:name "Dr. Sarah Johnson" .
+
+hc:Alice_Brown a hc:Patient ;
+    hc:age "59"^^xsd:int ;
+    hc:condition "Acne",
+        "Asthma",
+        "Congenital Heart Disease",
+        "Eczema",
+        "Heart Disease",
+        "Heart Murmur",
+        "Hypertension",
+        "Migraine",
+        "Osteoarthritis",
+        "Osteoporosis",
+        "Parkinson's Disease" ;
+    hc:gender "Female" ;
+    hc:name "Alice Brown" .
+
+hc:Dermatology a hc:Specialization ;
+    hc:name "Dermatology" .
+
+hc:Eva_Blue a hc:Patient ;
+    hc:age "66"^^xsd:int ;
+    hc:condition "Acne",
+        "Arthritis",
+        "Asthma",
+        "Back Pain",
+        "Coronary Artery Disease",
+        "Eczema",
+        "Epilepsy",
+        "Heart Disease",
+        "Parkinson's Disease",
+        "Psoriasis",
+        "Stroke" ;
+    hc:gender "Male" ;
+    hc:name "Eva Blue" .
+
+hc:Grace_Red a hc:Patient ;
+    hc:age "72"^^xsd:int ;
+    hc:condition "ADHD",
+        "Acne",
+        "Back Pain",
+        "Eczema",
+        "Epilepsy",
+        "Fracture",
+        "Heart Disease",
+        "Osteoporosis",
+        "Rosacea",
+        "Stroke" ;
+    hc:gender "Male" ;
+    hc:name "Grace Red" .
+
+hc:Phoenix a hc:Location ;
+    hc:name "Phoenix" .
+
+hc:Bob_White a hc:Patient ;
+    hc:age "99"^^xsd:int ;
+    hc:condition "ADHD",
+        "Asthma",
+        "Fracture",
+        "Migraine",
+        "Osteoporosis",
+        "Parkinson's Disease",
+        "Psoriasis" ;
+    hc:gender "Female" ;
+    hc:name "Bob White" .
+
+hc:Cardiology a hc:Specialization ;
+    hc:name "Cardiology" .
+
+hc:Charlie_Green a hc:Patient ;
+    hc:age "49"^^xsd:int ;
+    hc:condition "ADHD",
+        "Acne",
+        "Eczema",
+        "Epilepsy",
+        "Fracture",
+        "Parkinson's Disease" ;
+    hc:gender "Female" ;
+    hc:name "Charlie Green" .
+
+hc:Chicago a hc:Location ;
+    hc:name "Chicago" .
+
+hc:David_Black a hc:Patient ;
+    hc:age "32"^^xsd:int ;
+    hc:condition "Arrhythmia",
+        "Asthma",
+        "Coronary Artery Disease",
+        "Epilepsy",
+        "Fracture",
+        "Heart Disease",
+        "Hypertension",
+        "Parkinson's Disease",
+        "Rosacea",
+        "Scoliosis" ;
+    hc:gender "Female" ;
+    hc:name "David Black" .
+
+hc:Frank_Yellow a hc:Patient ;
+    hc:age "78"^^xsd:int ;
+    hc:condition "ADHD",
+        "Arthritis",
+        "Coronary Artery Disease",
+        "Epilepsy",
+        "Fracture",
+        "Heart Disease",
+        "Heart Failure",
+        "Heart Murmur",
+        "Hypertension",
+        "Migraine",
+        "Osteoporosis",
+        "Rosacea",
+        "Scoliosis",
+        "Stroke" ;
+    hc:gender "Female" ;
+    hc:name "Frank Yellow" .
+
+hc:Houston a hc:Location ;
+    hc:name "Houston" .
+
+hc:Los_Angeles a hc:Location ;
+    hc:name "Los Angeles" .
+
+hc:Neurology a hc:Specialization ;
+    hc:name "Neurology" .
+
+hc:New_York a hc:Location ;
+    hc:name "New York" .
+
+hc:Orthopedics a hc:Specialization ;
+    hc:name "Orthopedics" .
+
+hc:Pediatrics a hc:Specialization ;
+    hc:name "Pediatrics" .
+
