@@ -39,7 +39,7 @@ store = Neo4jStore(config=config)
 g = Graph(store=store)
 
 def file_url(p: str) -> str:
-    return "file:///" + os.path.abspath(p).replace("\\", "/")
+    return "file:///" + os.path.abspath(p).replace("\\", "/").replace(" ", "%20")
 
 # import data
 g.parse(file_url("data/rdf/healthcare_data.ttl"), format="turtle")

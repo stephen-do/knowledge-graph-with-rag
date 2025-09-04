@@ -27,7 +27,16 @@ source .venv/bin/activate
 
 #Import RDF into KG:
 1. Install APOC plugin on Neo4j
-2. Inst libs : rdflib + rdflib_neo4j  -> to run file rdf2KG.py 
+    docker run --name neo4j \
+      -p7474:7474 -p7687:7687 \
+      -e NEO4J_AUTH=neo4j/adgjmptw1 \
+      -e NEO4JLABS_PLUGINS='["apoc"]' \
+      -e NEO4J_apoc_export_file_enabled=true \
+      -e NEO4J_apoc_import_file_enabled=true \
+      -e NEO4J_apoc_import_file_use__neo4j__config=true \
+      -e NEO4J_apoc_meta_data_enabled=true \
+      neo4j
+2. Inst libs : rdflib + rdflib_neo4j  -> to run file run_rdf_to_kg.py 
 ```
 
 
