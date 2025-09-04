@@ -57,22 +57,7 @@ NEO4J_USER=neo4j
 NEO4J_PASSWORD=password
 ```
 
-## Usage
-
-### 1. Building Knowledge Graphs
-
-Build a knowledge graph for KG-RAG methods:
-
-```bash
-python -m scripts.build_cypher_graph
-```
-### 2. Running Evaluation
-To interactively query using KG-RAG methods:
-
-```bash
-python -m scripts.run_cypher_rag 
-```
-### 3. Run Chat APP
+### Run Chat APP
 ```bash
 python app.py
 ```

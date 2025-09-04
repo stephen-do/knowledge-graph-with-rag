@@ -123,7 +123,7 @@ class CypherBasedKGRAG:
         )
 
         # Generate the answer
-        print(messages)
+        # print(messages)
         response = self.qa_llm.invoke(messages)
         content = response.content if hasattr(response, "content") else response
 

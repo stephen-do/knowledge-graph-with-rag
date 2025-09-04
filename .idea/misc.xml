@@ -4,5 +4,5 @@
     <option name="sdkName" value="/opt/anaconda3" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="kg-rag" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 virtualenv at ~/Documents/learning_space/assigments/kg-rag/.venv" project-jdk-type="Python SDK" />
 </project>

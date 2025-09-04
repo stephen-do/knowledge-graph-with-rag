@@ -21,14 +21,13 @@ auth = {
     "pwd":  NEO4J_PASSWORD,
 }
 
-# === STEP 1: Xóa dữ liệu cũ ===
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 with driver.session(database=NEO4J_DATABASE) as session:
     session.run("MATCH (n) DETACH DELETE n")
 driver.close()
 print("Đã xóa toàn bộ dữ liệu cũ trong Neo4j.")
 
-# === STEP 2: Import dữ liệu RDF ===
+# Import dữ liệu RDF
 config = Neo4jStoreConfig(
     auth_data=auth,
     handle_vocab_uri_strategy=HANDLE_VOCAB_URI_STRATEGY.IGNORE,
@@ -39,7 +38,7 @@ store = Neo4jStore(config=config)
 g = Graph(store=store)
 
 def file_url(p: str) -> str:
-    return "file:///" + os.path.abspath(p).replace("\\", "/").replace(" ", "%20")
+    return "file:///" + os.path.abspath(p).replace("\\", "/")
 
 # import data
 g.parse(file_url("data/rdf/healthcare_data.ttl"), format="turtle")
@@ -47,8 +46,7 @@ g.parse(file_url("data/rdf/healthcare_data.ttl"), format="turtle")
 
 print("Triples in store:", len(g))
 
-# === STEP 3: Index KG ===
-
+# Index KG
 with driver.session(database=NEO4J_DATABASE) as session:
     result = session.run("SHOW INDEXES YIELD name RETURN name")
     for record in result:
