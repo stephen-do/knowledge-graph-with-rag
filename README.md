@@ -1,4 +1,4 @@
-# KG-RAG: Knowledge Graph-based Retrieval Augmented Generation
+# Realistic Semantic Web with Cypher-based KG-RAG Chat in Health Care Domain
 
 This repository contains a collection of implementations for Knowledge Graph-based RAG (Retrieval Augmented Generation) approaches and baseline methods for comparison. The code is structured as a Python package with modular components.
 

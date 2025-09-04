@@ -1,11 +1,12 @@
 import csv
+import os
 from neo4j import GraphDatabase
 
-# --- CONFIG LOCAL NEO4J ---
-NEO4J_URI = "bolt://localhost:7687"   # local neo4j bolt URI
-NEO4J_USERNAME = "neo4j"              # mặc định user
-NEO4J_PASSWORD = "adgjmptw1"           # đổi theo password của bạn
-AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
+
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.getenv("NEO4J_USERNAME", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "adgjmptw1")
+AUTH = (NEO4J_USER, NEO4J_PASSWORD)
 
 
 # Function to connect and run a Cypher query

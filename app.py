@@ -40,8 +40,8 @@ def chat(query, show_cypher):
 
 
 # Build Gradio UI
-with gr.Blocks(title="Cypher-based KG-RAG Chat") as demo:
-    gr.Markdown("# 🏥 Cypher-based KG-RAG Chat (Healthcare)")
+with gr.Blocks(title="Realistic Semantic Web with Cypher-based KG-RAG Chat") as demo:
+    gr.Markdown("# 🏥 Realistic Semantic Web with Cypher-based KG-RAG Chat in Health Care Domain")
     gr.Markdown("Ask questions about healthcare providers, patients, specializations, and locations.")
 
     with gr.Row():
