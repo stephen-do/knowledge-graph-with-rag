@@ -24,10 +24,10 @@ curl -sSf https://astral.sh/uv/install.sh | bash
 
 uv sync --dev
 source .venv/bin/activate
-
-#Import RDF into KG:
-1. Install APOC plugin on Neo4j
-    docker run --name neo4j \
+```
+### Run Neo4j by docker with APOC plugin:
+```    
+docker run --name neo4j \
       -p7474:7474 -p7687:7687 \
       -e NEO4J_AUTH=neo4j/adgjmptw1 \
       -e NEO4JLABS_PLUGINS='["apoc"]' \
@@ -36,10 +36,11 @@ source .venv/bin/activate
       -e NEO4J_apoc_import_file_use__neo4j__config=true \
       -e NEO4J_apoc_meta_data_enabled=true \
       neo4j
-2. Inst libs : rdflib + rdflib_neo4j  -> to run file run_rdf_to_kg.py 
 ```
-
-
+### Import RDF into KG
+```bash
+python run_rdf_to_kg.py 
+```
 ## Environment Variables
 
 Export the following environment variables:
@@ -71,16 +72,9 @@ To interactively query using KG-RAG methods:
 ```bash
 python -m scripts.run_cypher_rag 
 ```
-
-## Development
-
-### Pre-commit hooks
-
-This project uses pre-commit hooks to ensure code quality:
-
+### 3. Run Chat APP
 ```bash
-# Run pre-commit hooks on all files
-pre-commit run --all-files
+python app.py
 ```
 
 ## References
