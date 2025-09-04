@@ -18,23 +18,84 @@ IMPORTANT:
 Do not include any explanations or apologies in your response.
 Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
 Do not include any text except the generated Cypher statement.
+Do not include markdown: ```cypher
 Examples:
 Here are a few examples of generated Cypher statements for particular healthcare questions:
 
 # Example 1: Which patients are treated by Dr. Smith?
-MATCH (hp:HealthcareProvider)-[:TREATS]->(p:Patient)
-WHERE hp.name = "Dr. Smith"
-RETURN p LIMIT 25
+CALL db.index.fulltext.queryNodes('ft_hp', 'Dr. Smith') 
+YIELD node AS hp, score AS hpScore
+WITH hp, hpScore
+ORDER BY hpScore DESC LIMIT 1
+MATCH (hp)-[:TREATS]->(p:Patient)
+RETURN
+  p,
+  hp.name AS matched_provider,
+  hpScore AS provider_score
+ORDER BY provider_score DESC
+LIMIT 100;
 
 # Example 2: What specialization does Dr. Brown have?
-MATCH (hp:HealthcareProvider)-[:SPECIALIZES_IN]->(s:Specialization)
-WHERE hp.name = "Dr. Brown"
-RETURN s LIMIT 1
+CALL db.index.fulltext.queryNodes('ft_hp', 'Dr. Brown')
+YIELD node AS hp, score AS hpScore
+WITH hp, hpScore
+ORDER BY hpScore DESC LIMIT 1
+MATCH (hp)-[:SPECIALIZES_IN]->(s:Specialization)
+RETURN
+s,
+hp.name AS matched_provider,
+hpScore AS provider_score
+ORDER BY provider_score DESC
+LIMIT 5;
 
 # Example 3: Which healthcare providers are located in New York?
-MATCH (hp:HealthcareProvider)-[:LOCATED_AT]->(l:Location)
-WHERE l.name = "New York"
-RETURN hp LIMIT 25
+CALL db.index.fulltext.queryNodes('ft_loc', 'New York')
+YIELD node AS l, score AS locScore
+WITH l, locScore
+ORDER BY locScore DESC LIMIT 1
+MATCH (hp:HealthcareProvider)-[:LOCATED_AT]->(l)
+RETURN
+DISTINCT hp,
+l.name AS matched_location,
+locScore AS location_score
+ORDER BY location_score DESC
+LIMIT 25;
+
+# Example 4 (Multi-hop):Which patients are treated by healthcare providers named Sarah located in Los Angeles?
+CALL db.index.fulltext.queryNodes('ft_loc', 'Los Angeles')
+YIELD node AS l, score AS locScore
+WITH l, locScore
+ORDER BY locScore DESC LIMIT 1
+CALL db.index.fulltext.queryNodes('ft_hp', 'Sarah')
+YIELD node AS hp, score AS hpScore
+WITH l, locScore, hp, hpScore
+MATCH (hp)-[:LOCATED_AT]->(l)
+MATCH (hp)-[:TREATS]->(p:Patient)
+RETURN
+  p,
+  hp.name AS matched_provider,
+  l.name AS matched_location,
+  hpScore AS provider_score,
+  locScore AS location_score
+ORDER BY provider_score DESC, p.name ASC
+LIMIT 25;
+
+# Example 5 (Multi-hop + Aggregation): For Dr. Sarah Johnson in Los Angeles, what is the total number of patients she treats and what is their average age?
+CALL db.index.fulltext.queryNodes('ft_loc', 'Los Angeles')
+YIELD node AS l, score AS locScore
+WITH l
+ORDER BY locScore DESC LIMIT 1
+
+CALL db.index.fulltext.queryNodes('ft_hp', 'Sarah')
+YIELD node AS hp, score AS hpScore
+WITH l, hp
+MATCH (hp)-[:LOCATED_AT]->(l)
+MATCH (hp)-[:TREATS]->(p:Patient)
+RETURN
+  hp.name AS matched_provider,
+  l.name AS matched_location,
+  count(DISTINCT p) AS total_patients,
+  round(avg(p.age), 1) AS avg_age;
 
 The question is:
 {question}

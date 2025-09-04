@@ -1,0 +1,55 @@
+@prefix hc: <http://example.org/healthcare#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+hc:HealthcareProvider a rdfs:Class ;
+    rdfs:label "Healthcare Provider"@en ;
+    rdfs:comment "A medical professional who provides healthcare services."@en .
+
+hc:Location a rdfs:Class ;
+    rdfs:label "Location"@en ;
+    rdfs:comment "A city or place where providers/patients are located."@en .
+
+hc:Patient a rdfs:Class ;
+    rdfs:label "Patient"@en ;
+    rdfs:comment "An individual who receives healthcare services."@en .
+
+hc:Specialization a rdfs:Class ;
+    rdfs:label "Medical Specialization"@en ;
+    rdfs:comment "A medical specialty, e.g., Pediatrics, Cardiology."@en .
+
+hc:LOCATED_AT a rdf:Property ;
+    rdfs:label "located at"@en ;
+    rdfs:domain hc:HealthcareProvider ;
+    rdfs:range hc:Location .
+
+hc:SPECIALIZES_IN a rdf:Property ;
+    rdfs:label "specializes in"@en ;
+    rdfs:domain hc:HealthcareProvider ;
+    rdfs:range hc:Specialization .
+
+hc:TREATS a rdf:Property ;
+    rdfs:label "treats"@en ;
+    rdfs:domain hc:HealthcareProvider ;
+    rdfs:range hc:Patient .
+
+hc:age a rdf:Property ;
+    rdfs:domain hc:Patient ;
+    rdfs:range xsd:int .
+
+hc:bio a rdf:Property ;
+    rdfs:domain hc:HealthcareProvider ;
+    rdfs:range xsd:string .
+
+hc:condition a rdf:Property ;
+    rdfs:domain hc:Patient ;
+    rdfs:range xsd:string .
+
+hc:gender a rdf:Property ;
+    rdfs:domain hc:Patient ;
+    rdfs:range xsd:string .
+
+hc:name a rdf:Property ;
+    rdfs:range xsd:string .
+

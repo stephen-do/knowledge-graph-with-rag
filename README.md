@@ -24,6 +24,10 @@ curl -sSf https://astral.sh/uv/install.sh | bash
 
 uv sync --dev
 source .venv/bin/activate
+
+#Import RDF into KG:
+1. Install APOC plugin on Neo4j
+2. Inst libs : rdflib + rdflib_neo4j  -> to run file rdf2KG.py 
 ```
 
 
